@@ -39,4 +39,4 @@ nosetests.xml
 .virtualenv
 
 # Backups folder
-/_backups
+/_backups*

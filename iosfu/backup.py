@@ -91,8 +91,8 @@ class Backup(object):
             pass
 
 ### TEST
-manager = BackupManager()
-manager.lookup()
+# manager = BackupManager()
+# manager.lookup()
 
-for k, backup in manager.backups.items():
-    print(backup.id, backup.valid, backup.exists('Info.plist'))
+# for k, backup in manager.backups.items():
+#     print(backup.id, backup.valid, backup.exists('Info.plist'))
