@@ -1,21 +1,13 @@
 from flask import Flask
-from os import getcwd
-from os.path import dirname, realpath
+from iosfu.conf import ROOT_PATH
+
+server = Flask(__name__)
 
 
-PWD = getcwd()
-MODULE_PATH = dirname(realpath(__file__))
-
-app = Flask(__name__)
-
-
-@app.route("/")
+@server.route("/")
 def main():
     result = """
         Executed from: {0}<br />
         Path for GUI module: {1}
-    """.format(PWD, MODULE_PATH)
+    """.format(ROOT_PATH)
     return result
-
-if __name__ == "__main__":
-    app.run()
