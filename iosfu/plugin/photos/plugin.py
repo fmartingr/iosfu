@@ -1,4 +1,5 @@
-from iosfu.plugin import BasePlugin, Library
+from iosfu.plugin.base import BasePlugin
+from iosfu.plugin.library import Library
 
 
 plugin_library = Library()
