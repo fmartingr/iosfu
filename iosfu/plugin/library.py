@@ -33,16 +33,4 @@ class Library(object):
     def discover(self):
         for path, dirs, files in walk(PATH):
             if files == ['__init__.py', 'plugin.py']:
-                # print(path)
-                # print(dirs)
-                # print(files)
-                # print('plugin!')
                 self.load(path)
-        # for dirname in listdir(PATH):
-        #     plugin_path = join_paths(PATH, dirname)
-        #     plugin_module = join_paths(PATH, dirname, 'plugin.py')
-        #     plugin_init = join_paths(PATH, dirname, '__init__.py')
-        #     if isdir(plugin_path) and isfile(plugin_module) \
-        #         and isfile(plugin_init):
-        #         self.load(plugin_path, dirname)
-                
