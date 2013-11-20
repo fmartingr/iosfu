@@ -2,6 +2,8 @@ from os import listdir
 from os.path import join as join_paths, basename, isdir, isfile
 from plistlib import readPlist
 
+from biplist import readPlist as readBinaryPlist
+
 from .conf import BACKUPS_PATH
 
 
@@ -54,7 +56,6 @@ class Backup(object):
         self.check()
 
         self.files = []
-        print(self._plist)
 
     def get_info(self):
         self.id = basename(self.path)
@@ -84,15 +85,8 @@ class Backup(object):
     #   File handlers
     #
     def _read_plist(self, filename):
+        file_path = join_paths(self.path, filename)
         try:
-            self._plist[filename] = readPlist(join_paths(self.path, filename))
-        except:
-            # TODO
-            pass
-
-### TEST
-# manager = BackupManager()
-# manager.lookup()
-
-# for k, backup in manager.backups.items():
-#     print(backup.id, backup.valid, backup.exists('Info.plist'))
+            self._plist[filename] = readPlist(file_path)
+        except Exception as error:
+            self._plist[filename] = readBinaryPlist(file_path)
