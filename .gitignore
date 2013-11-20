@@ -40,3 +40,6 @@ nosetests.xml
 
 # Backups folder
 /_backups*
+
+# Manual tests
+/test_*.py
