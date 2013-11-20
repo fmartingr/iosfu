@@ -53,11 +53,12 @@ class Backup(object):
     def __init__(self, path):
         self.path = path
         self.get_info()
-        self.check()
-
-        self.files = []
+        self.init_check()
 
     def get_info(self):
+        """
+        Get all the basic info for the backup
+        """
         self.id = basename(self.path)
         self.name = self.id
 
@@ -72,20 +73,44 @@ class Backup(object):
                         handler = getattr(self, self._file_handlers[match])
                         handler(filename)
 
-    def check(self):
+    def init_check(self):
+        """
+        Check if the needed stuff are there to consider this a backup
+        """
         for required_file in self._required_files:
             # Check if required files are there
             if required_file not in self.files:
                 self.valid = False
 
     def exists(self, filename):
+        """
+        Check if the given file exists
+        """
         return filename in self.files
+
+    def get_file(self, filename, handler=False):
+        """
+        Returns given file path
+        - handler (bool) - Returns handler instead of path
+        """
+        result = None
+        if self.exists(filename):
+            file_path = join_paths(self.path, filename)
+            if handler:
+                result = open(file_path, 'rb')
+            else:
+                result = file_path
+        return result
 
     #
     #   File handlers
     #
     def _read_plist(self, filename):
-        file_path = join_paths(self.path, filename)
+        """
+        Handler for .plist files
+        Reads them and stores on self._plist for plugin access
+        """
+        file_path = self.get_file(filename)
         try:
             self._plist[filename] = readPlist(file_path)
         except Exception as error:
