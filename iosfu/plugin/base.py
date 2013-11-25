@@ -42,8 +42,8 @@ class BasePlugin(object):
             return self.__do__(*args, **kwargs)
         else:
             raise Exception(
-                'Plugin {0} need a backup instance to work with'\
-                .format(self.__slug__)
+                'Plugin {0} need a backup instance to work with'.format(
+                    self.__slug__)
             )
 
     def __do__(self, *args, **kwargs):
