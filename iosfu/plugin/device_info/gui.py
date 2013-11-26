@@ -6,7 +6,7 @@ controller = GUIController()
 
 
 class Main(GUISection):
-    name = 'main'
+    name = 'Main'
 
 
 class VersionInfo(GUISection):

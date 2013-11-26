@@ -36,3 +36,13 @@ def panel(panel_id=None):
     """
     panel = controller.load_panel(panel_id)
     return "{}".format(panel().__slug__)
+
+
+@server.route("/<panel_id>.<section_id>")
+def section(panel_id=None, section_id=None):
+    """
+    Section
+    """
+    panel = controller.load_panel(panel_id)
+    section = panel.get_section(section_id)
+    return "{}.{}".format(panel.__slug__, section.__slug__)

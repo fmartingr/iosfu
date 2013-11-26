@@ -34,4 +34,4 @@ class GUIController(object):
 
     def load_panel(self, panel_id):
         if panel_id in self._panels:
-            return self._panels[panel_id]
+            return self._panels[panel_id]()
