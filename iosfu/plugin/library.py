@@ -13,6 +13,8 @@ class Library(object):
     _instance = None
     _plugins = {}  # Plugin dictonary
 
+    _mandatory_plugin_files = ['__init__.py', 'plugin.py']
+
     def register(self, plugin):
         """
         Decorator to register plugins
@@ -32,9 +34,15 @@ class Library(object):
 
     def discover(self):
         for path, dirs, files in walk(PATH):
-            if files == ['__init__.py', 'plugin.py']:
+            if self._is_plugin(files):
                 self.load(path)
 
     @property
     def plugins(self):
         return self._plugins
+
+    def _is_plugin(self, files):
+        for f in self._mandatory_plugin_files:
+            if f not in files:
+                return False
+        return True
