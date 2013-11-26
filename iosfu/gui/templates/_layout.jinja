@@ -15,12 +15,15 @@
   <nav class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
       <!-- Left -->
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/">
         iOSFU
       </a>
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link 1</a></li>
-        <li><a href="#">Link 2</a></li>
+        {% for category in categories %}
+        <li {% if current.category == category %}class="active"{% endif %}>
+          <a href="/{{ category }}">{{ category|title }}</a>
+        </li>
+        {% endfor %}
       </ul>
       
       <!-- Right -->
@@ -37,13 +40,13 @@
             Change  <b class="caret"></b>
           </a>
           <!-- Backup list -->
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu text-right">
             {% for backup_id in backups %}
             <li>
               {% if backups[backup_id].valid %}
               <a href="/backup/{{ backup_id }}/">{{ backup_id }}</a>
               {% else %}
-              <a href="/backup/{{ backup_id }}/" data-toggle="tooltip" title="This backup seems invalid">
+              <a href="/backup/{{ backup_id }}/" data-toggle="tooltip" title="This backup seems invalid" data-placement="left">
                 {{ backup_id }} 
                 <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
               </a>
@@ -57,15 +60,41 @@
   </nav>
 
   <div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
     <ol class="breadcrumb">
       <li><a href="/">iOSFU</a></li>
-      <li><a href="#">-- Plugin --</a></li>
-      <li class="active">-- Section --</li>
+      {% if current.category %}
+      <li><a href="/{{ current.category }}/">{{ current.category|title }}</a></li>
+      {% endif %}
+      {% if current.panel %}
+      <li class="active">
+        <a href="/{{ current.category }}/{{ current.panel.id }}/">{{ current.panel.name }}</a>
+      </li>
+      {% endif %}
+      {% if current.section %}
+      <li class="active">
+        <!-- <a href="/{{ current.category }}/{{ current.panel }}/{{ current.section }}"> -->
+        {{ current.section }}
+        <!-- </a> -->
+      </li>
+      {% endif %}
     </ol>
   </div>
 
   <!-- JS -->
   <script src="https://code.jquery.com/jquery.js"></script>
   <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  // Init tooltips
+  $(function(){
+    $('[data-toggle=tooltip]').tooltip()
+  });
+  </script>
 </body>
 </html>

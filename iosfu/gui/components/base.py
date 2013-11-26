@@ -39,6 +39,12 @@ class GUIPanel(GUIComponent):
         if section_id in self._section_map:
             return self.sections[self._section_map[section_id]]()
 
+    def render(self, *args, **kwargs):
+        """
+        Main render method
+        """
+        return 'Base GUIPanel'
+
     #
     # Privates
     #
@@ -73,6 +79,12 @@ class GUISection(GUIComponent):
     def __init__(self):
         if not self.id and self.name:
             self.id = "{}".format(slugify(self.name))
+
+    def render(self, *args, **kwargs):
+        """
+        Base rendering method
+        """
+        return "Base GUIComponent"
 
     @property
     def __slug__(self):

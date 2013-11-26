@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, redirect, url_for
+from flask import Flask, session, render_template, redirect, url_for, flash
 
 from iosfu.plugin.library import Library
 from iosfu.gui.core import GUIController
@@ -23,9 +23,23 @@ backup_manager = BackupManager()
 backup_manager.lookup()
 
 
+#
+# CONTEXT
+#
 @server.context_processor
 def backup_list():
     return dict(backups=backup_manager.backups)
+
+
+@server.context_processor
+def category_list():
+    return dict(categories=controller._categories)
+
+
+@server.context_processor
+def current_section():
+    # Empty so jinja can stop yelling at me
+    return dict(current=dict())
 
 
 #
@@ -39,23 +53,43 @@ def main():
     return render_template('main.jinja')
 
 
-@server.route("/<panel_id>")
-def panel(panel_id=None):
+@server.route("/<category>/")
+def category(category):
+    """
+    Category
+    """
+    # ctx = {'current': {'category': category}}
+    panels = controller._categories[category]
+    if len(panels) == 1:
+        go = redirect(url_for('panel', category=category, panel_id=panels[0]))
+    else:
+        # TODO: List Panels? Send to main?
+        go = 'TODO'
+    return go
+
+
+@server.route("/<category>/<panel_id>/")
+def panel(category, panel_id):
     """
     Panel
     """
     panel = controller.load_panel(panel_id)
-    return "{}".format(panel().__slug__)
+    ctx = {'current': {'category': category, 'panel': panel}}
+    template, context = panel.render(ctx)
+    return render_template(template, **ctx)
 
 
-@server.route("/<panel_id>.<section_id>")
-def section(panel_id=None, section_id=None):
+@server.route("/<category>/<panel_id>/<section_id>/")
+def section(category, panel_id, section_id):
     """
     Section
     """
     panel = controller.load_panel(panel_id)
     section = panel.get_section(section_id)
-    return "{}.{}".format(panel.__slug__, section.__slug__)
+    ctx = {'current': {
+        'category': category, 'panel': panel, 'section': section}}
+    template, context = section.render(ctx)
+    return render_template(template, **ctx)
 
 
 @server.route("/backup/<backup_id>/")
@@ -67,12 +101,17 @@ def select_backup(backup_id):
         backup = backup_manager.backups[backup_id]
         if backup.valid:
             session['backup'] = backup_id
+            flash('Changed to backup {}'.format(backup_id), 'success')
         else:
-            del session['backup']
+            flash('The backup you selected is invalid.', 'danger')
+            # Delete current selected backup -if any
+            if 'backup' in session:
+                del session['backup']
     except:
         # Backup is not loaded / do not exist
-        # session['backup'] does not exist
+        # Delete current selected backup -if any
         if 'backup' in session:
             del session['backup']
+        flash('The backup you selected was not found.', 'danger')
 
     return redirect(url_for('main'))

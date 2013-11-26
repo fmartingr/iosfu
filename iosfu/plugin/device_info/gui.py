@@ -19,7 +19,12 @@ class DeviceInfoPanel(GUIPanel):
 
     name = 'Device info'
 
+    category = 'Base'
+
     sections = [
         Main,
         VersionInfo
     ]
+
+    def render(self, context):
+        return 'main.jinja', context
