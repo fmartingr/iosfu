@@ -79,6 +79,7 @@ class Backup(object):
         """
         for required_file in self._required_files:
             # Check if required files are there
+            # FIXME Sometimes it doesn't work :?
             if required_file not in self.files:
                 self.valid = False
 

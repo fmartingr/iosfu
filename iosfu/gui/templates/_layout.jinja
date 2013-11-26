@@ -22,7 +22,7 @@
         {% for category in categories %}
         <li class="{% if current.category == category %}active{% endif %} dropdown">
           {% if categories[category]|length == 1 %}
-          <a href="/{{ category }}/{{ categories[category] }}">{{ categories[category][0].name }}</a>
+          <a href="/{{ category }}/{{ categories[category][0].id }}">{{ categories[category][0].name }}</a>
           {% else %}
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category|title }} <i class="caret"></i></a>
           <ul class="dropdown-menu">
