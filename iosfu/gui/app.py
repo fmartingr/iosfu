@@ -14,9 +14,6 @@ controller = GUIController()
 controller.load_from_library(library)
 
 
-print(controller._panels)
-
-
 @server.route("/")
 def main():
     result = """

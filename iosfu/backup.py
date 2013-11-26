@@ -113,5 +113,10 @@ class Backup(object):
         file_path = self.get_file(filename)
         try:
             self._plist[filename] = readPlist(file_path)
-        except Exception as error:
-            self._plist[filename] = readBinaryPlist(file_path)
+        except:
+            # Is binaryPlist?
+            try:
+                self._plist[filename] = readBinaryPlist(file_path)
+            except:
+                # What is it?
+                pass

@@ -27,8 +27,9 @@ class GUIPanel(GUIComponent):
         if not self.id and self.name:
             self.id = slugify(self.name)
 
+    @property
     def __slug__(self):
-        return slugify(self.name)
+        return self.id
 
 
 class GUISection(GUIComponent):
@@ -36,9 +37,20 @@ class GUISection(GUIComponent):
     Pene
     """
     _type = 'section'
+    id = None
 
     # A GUIPanel ID
     panel = None
 
     # Name of the section
     name = None
+
+    def __init__(self):
+        if not self.id and (self.name and self.panel):
+            self.id = "{}.{}".format(
+                slugify(self.panel), slugify(self.name)
+            )
+
+    @property
+    def __slug__(self):
+        return self.id
