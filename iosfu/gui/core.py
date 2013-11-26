@@ -18,7 +18,8 @@ class GUIController(object):
         Decorator to register GUIPanels.
         """
         ins = panel_component()
-        assert isinstance(ins, GUIPanel)
+        assert isinstance(ins, GUIPanel), "{}.{} is not a GUIPanel insance"\
+            .format(ins.__module__, panel_component.__name__)
         slug = ins.__slug__
 
         # Append panel to instance manager
