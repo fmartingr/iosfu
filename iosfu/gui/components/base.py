@@ -23,6 +23,9 @@ class GUIPanel(GUIComponent):
     # Name of the panel (will be slugified to create an ID)
     name = None
 
+    # List of sections
+    sections = []
+
     def __init__(self):
         if not self.id and self.name:
             self.id = slugify(self.name)

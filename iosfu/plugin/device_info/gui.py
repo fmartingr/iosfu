@@ -1,11 +1,25 @@
-from iosfu.gui.core import GUIController, GUIPanel
+from iosfu.gui.core import GUIController
+from iosfu.gui.components.base import GUIPanel, GUISection
 
 
 controller = GUIController()
 
 
-@controller.register
+class Main(GUISection):
+    name = 'main'
+
+
+class VersionInfo(GUISection):
+    name = 'Version Info'
+
+
+@controller.register_panel
 class DeviceInfoPanel(GUIPanel):
     id = 'device-info'
 
     name = 'Device info'
+
+    sections = [
+        Main,
+        VersionInfo
+    ]

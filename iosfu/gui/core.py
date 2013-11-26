@@ -1,5 +1,7 @@
 from importlib import import_module
 
+from .components.base import GUIPanel
+
 
 class GUIController(object):
     """
@@ -9,33 +11,19 @@ class GUIController(object):
     _panels = {}
     _sections = {}
 
-    def register(self, component):
-        """
-        Decorator to register plugins
-        """
-        ins = component()
-
-        print(ins)
-
-        if ins._type == 'panel':
-            self.register_panel(component)
-
-        if ins._type == 'section':
-            self.register_section(component)
-
     def register_panel(self, panel_component):
-        self._panels['a'] = panel_component
-        pass
-
-    def register_section(self, section_component):
-        print('register section')
-        pass
+        """
+        Decorator to register GUIPanels
+        """
+        ins = panel_component()
+        assert isinstance(ins, GUIPanel)
+        self._panels[ins.__slug__] = panel_component
 
     def load_from_library(self, library):
         for k, plugin in library.plugins.items():
             plugin_module = plugin.__module__
             gui_module = "{0}.{1}".format(
-                plugin_module.rstrip('.plugin'),
+                plugin_module.rsplit('.', 1)[0],
                 'gui'
             )
             try:
@@ -43,3 +31,7 @@ class GUIController(object):
             except ImportError as error:
                 # Plugin with no GUI module.
                 print(error)
+
+    def load_panel(self, panel_id):
+        if panel_id in self._panels:
+            return self._panels[panel_id]
