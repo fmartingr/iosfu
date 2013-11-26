@@ -14,8 +14,8 @@ class BackupManager(object):
     # Backups loaded
     backups = {}
 
-    def __init__(self):
-        self.path = BACKUPS_PATH
+    def __init__(self, path=BACKUPS_PATH):
+        self.path = path
 
     def lookup(self):
         """
