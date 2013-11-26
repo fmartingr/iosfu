@@ -27,9 +27,9 @@ class GUIController(object):
 
         # Category handling
         category = slugify(ins.category)
-        if ins.category not in self._categories:
+        if category not in self._categories:
             self._categories[category] = []
-        self._categories[category].append(slug)
+        self._categories[category].append(ins)
 
     def load_from_library(self, library):
         """
@@ -43,9 +43,9 @@ class GUIController(object):
             )
             try:
                 import_module(gui_module)
-            except ImportError as error:
+            except ImportError:
                 # Plugin with no GUI module.
-                print(error)
+                print("Plugin {} gui module not found.".format(k))
 
     def load_panel(self, panel_id):
         """

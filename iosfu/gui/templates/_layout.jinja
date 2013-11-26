@@ -20,8 +20,17 @@
       </a>
       <ul class="nav navbar-nav">
         {% for category in categories %}
-        <li {% if current.category == category %}class="active"{% endif %}>
-          <a href="/{{ category }}">{{ category|title }}</a>
+        <li class="{% if current.category == category %}active{% endif %} dropdown">
+          {% if categories[category]|length == 1 %}
+          <a href="/{{ category }}/{{ categories[category] }}">{{ categories[category][0].name }}</a>
+          {% else %}
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category|title }} <i class="caret"></i></a>
+          <ul class="dropdown-menu">
+            {% for panel in categories[category] %}
+            <li {% if current.panel.id == panel.id %}class="active"{% endif %}><a href="/{{ category }}/{{ panel.id }}/">{{ panel.name }}</a></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>

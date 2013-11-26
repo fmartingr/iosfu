@@ -39,7 +39,7 @@ def category_list():
 @server.context_processor
 def current_section():
     # Empty so jinja can stop yelling at me
-    return dict(current=dict())
+    return dict(current=dict(category=None, panel=None, section=None))
 
 
 #
