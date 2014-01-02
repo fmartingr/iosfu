@@ -1,0 +1,12 @@
+{% extends "_layout.jinja" %}
+
+{% block content %}
+<table class="table table-bordered">
+    {% for key in plugin_data.device %}
+    <tr>
+        <th>{{ key }}</th>
+        <td>{{ plugin_data.device[key] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

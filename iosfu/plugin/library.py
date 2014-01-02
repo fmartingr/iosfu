@@ -1,5 +1,5 @@
-from os import listdir, walk
-from os.path import join as join_paths, isdir, isfile, realpath, dirname
+from os import walk
+from os.path import realpath, dirname
 from importlib import import_module
 
 
@@ -11,7 +11,9 @@ class Library(object):
     Plugin library
     """
     _instance = None
-    plugins = {}  # Plugin dictonary
+    _plugins = {}  # Plugin dictonary
+
+    _mandatory_plugin_files = ['__init__.py', 'plugin.py']
 
     def register(self, plugin):
         """
@@ -19,11 +21,13 @@ class Library(object):
         """
         ins = plugin()
         plugin_slug = ins.__slug__
-        if ins not in self.plugins:
-            self.plugins[plugin_slug] = plugin
+        if ins not in self._plugins:
+            self._plugins[plugin_slug] = plugin
         else:
             raise RuntimeError(
                 'Plugin {0} already registered.'.format(plugin_slug))
+
+        return plugin
 
     def load(self, path):
         plugin_path = path.replace(PATH, '').replace('/', '.')
@@ -32,5 +36,15 @@ class Library(object):
 
     def discover(self):
         for path, dirs, files in walk(PATH):
-            if files == ['__init__.py', 'plugin.py']:
+            if self._is_plugin(files):
                 self.load(path)
+
+    @property
+    def plugins(self):
+        return self._plugins
+
+    def _is_plugin(self, files):
+        for f in self._mandatory_plugin_files:
+            if f not in files:
+                return False
+        return True

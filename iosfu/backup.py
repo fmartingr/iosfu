@@ -14,8 +14,8 @@ class BackupManager(object):
     # Backups loaded
     backups = {}
 
-    def __init__(self):
-        self.path = BACKUPS_PATH
+    def __init__(self, path=BACKUPS_PATH):
+        self.path = path
 
     def lookup(self):
         """
@@ -27,6 +27,12 @@ class BackupManager(object):
             if isdir(path):
                 backup = Backup(path)
                 self.backups[backup.id] = backup
+
+    def get(self, backup_id):
+        if backup_id in self.backups and self.backups[backup_id].valid:
+            return self.backups[backup_id]
+        else:
+            raise Exception('Backup not registered')
 
 
 class Backup(object):
@@ -79,6 +85,7 @@ class Backup(object):
         """
         for required_file in self._required_files:
             # Check if required files are there
+            # FIXME Sometimes it doesn't work :?
             if required_file not in self.files:
                 self.valid = False
 
@@ -113,5 +120,10 @@ class Backup(object):
         file_path = self.get_file(filename)
         try:
             self._plist[filename] = readPlist(file_path)
-        except Exception as error:
-            self._plist[filename] = readBinaryPlist(file_path)
+        except:
+            # Is binaryPlist?
+            try:
+                self._plist[filename] = readBinaryPlist(file_path)
+            except:
+                # What is it?
+                pass
