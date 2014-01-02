@@ -51,7 +51,7 @@ def main():
     """
     Main page
     """
-    return render_template('main.jinja')
+    return render_template('_layout.jinja')
 
 
 @server.route("/<category>/")
