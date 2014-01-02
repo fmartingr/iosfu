@@ -1,7 +1,7 @@
 from importlib import import_module
 
 from iosfu.utils import slugify
-from .components.base import GUIPanel
+from .components.base import Panel
 
 
 class GUIController(object):
@@ -15,10 +15,10 @@ class GUIController(object):
 
     def register_panel(self, panel_component):
         """
-        Decorator to register GUIPanels.
+        Decorator to register Panels.
         """
         ins = panel_component()
-        assert isinstance(ins, GUIPanel), "{}.{} is not a GUIPanel insance"\
+        assert isinstance(ins, Panel), "{}.{} is not a GUI Panel instance"\
             .format(ins.__module__, panel_component.__name__)
         slug = ins.__slug__
 

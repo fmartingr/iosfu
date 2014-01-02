@@ -28,6 +28,12 @@ class BackupManager(object):
                 backup = Backup(path)
                 self.backups[backup.id] = backup
 
+    def get(self, backup_id):
+        if backup_id in self.backups and self.backups[backup_id].valid:
+            return self.backups[backup_id]
+        else:
+            raise Exception('Backup not registered')
+
 
 class Backup(object):
     """

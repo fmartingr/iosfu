@@ -27,6 +27,8 @@ class Library(object):
             raise RuntimeError(
                 'Plugin {0} already registered.'.format(plugin_slug))
 
+        return plugin
+
     def load(self, path):
         plugin_path = path.replace(PATH, '').replace('/', '.')
         plugin_package = 'iosfu.plugin{0}.plugin'.format(plugin_path)

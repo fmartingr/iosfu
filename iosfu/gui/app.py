@@ -1,11 +1,12 @@
-from flask import Flask, session, render_template, redirect, url_for, flash
+from flask import Flask, session, render_template, redirect, url_for, flash, \
+    render_template_string
 
 from iosfu.plugin.library import Library
 from iosfu.gui.core import GUIController
 from iosfu.backup import BackupManager
 
 
-server = Flask(__name__)
+server = Flask('iosfu.gui.app')
 
 # Secret key for sessions
 server.secret_key = '123456'  # Local app, simple session ID.
@@ -74,9 +75,23 @@ def panel(category, panel_id):
     Panel
     """
     panel = controller.load_panel(panel_id)
-    ctx = {'current': {'category': category, 'panel': panel}}
-    template, context = panel.render(ctx)
-    return render_template(template, **ctx)
+    try:
+        default_section = panel.sections[0]()
+        return redirect(
+            url_for(
+                'section',
+                category=category, panel_id=panel_id,
+                section_id=default_section.id))
+    except IndexError:
+        ctx = {
+            'current': {
+                'category': category,
+                'panel': panel
+                },
+            'error_message': 'Panel does not have sections!'
+        }
+        return render_template(
+            'error.jinja', **ctx)
 
 
 @server.route("/<category>/<panel_id>/<section_id>/")
@@ -85,11 +100,12 @@ def section(category, panel_id, section_id):
     Section
     """
     panel = controller.load_panel(panel_id)
-    section = panel.get_section(section_id)
+    section = panel.get_section(
+        section_id, backup_manager.get(session['backup']))
     ctx = {'current': {
         'category': category, 'panel': panel, 'section': section}}
-    template, context = section.render(ctx)
-    return render_template(template, **ctx)
+    template, context = section.render(ctx=ctx)
+    return render_template_string(template, **context)
 
 
 @server.route("/backup/<backup_id>/")
