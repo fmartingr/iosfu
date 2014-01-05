@@ -19,34 +19,36 @@
         iOSFU
       </a>
       <ul class="nav navbar-nav">
-        {% for category in categories %}
-        <li class="{% if current.category == category %}active{% endif %} dropdown">
-          {% if categories[category]|length == 1 %}
-          <a href="/{{ category }}/{{ categories[category][0].id }}">{{ categories[category][0].name }}</a>
-          {% else %}
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category|title }} <i class="caret"></i></a>
-          <ul class="dropdown-menu">
-            {% for panel in categories[category] %}
-            <li {% if current.panel.id == panel.id %}class="active"{% endif %}><a href="/{{ category }}/{{ panel.id }}/">{{ panel.name }}</a></li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </li>
-        {% endfor %}
+        {% if session.backup %}
+          {% for category in categories %}
+          <li class="{% if current.category == category %}active{% endif %} dropdown">
+            {% if categories[category]|length == 1 %}
+            <a href="/{{ category }}/{{ categories[category][0].id }}">{{ categories[category][0].name }}</a>
+            {% else %}
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category|title }} <i class="caret"></i></a>
+            <ul class="dropdown-menu">
+              {% for panel in categories[category] %}
+              <li {% if current.panel.id == panel.id %}class="active"{% endif %}><a href="/{{ category }}/{{ panel.id }}/">{{ panel.name }}</a></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        {% else %}
+        <li><a href="#">Select a backup to show plugin categories</a></li>
+        {% endif %}
       </ul>
       
       <!-- Right -->
       <p class="navbar-text navbar-right">
         {% if session.backup %}
           {{ session.backup }}
-        {% else %}
-          No backup selected
         {% endif %}
       </p>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Change  <b class="caret"></b>
+            Backup <b class="caret"></b>
           </a>
           <!-- Backup list -->
           <ul class="dropdown-menu text-right">
@@ -55,7 +57,7 @@
               {% if backups[backup_id].valid %}
               <a href="/backup/{{ backup_id }}/">{{ backup_id }}</a>
               {% else %}
-              <a href="/backup/{{ backup_id }}/" data-toggle="tooltip" title="This backup seems invalid" data-placement="left">
+              <a href="#" data-toggle="tooltip" title="This backup seems invalid" data-placement="left">
                 {{ backup_id }} 
                 <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
               </a>
