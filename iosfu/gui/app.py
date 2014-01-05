@@ -59,13 +59,9 @@ def category(category):
     """
     Category
     """
-    # ctx = {'current': {'category': category}}
     panels = controller._categories[category]
-    if len(panels) == 1:
-        go = redirect(url_for('panel', category=category, panel_id=panels[0]))
-    else:
-        # TODO: List Panels? Send to main?
-        go = 'TODO'
+    go = redirect(
+        url_for('panel', category=category, panel_id=panels[0].id))
     return go
 
 
