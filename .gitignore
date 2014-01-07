@@ -37,6 +37,8 @@ nosetests.xml
 
 # Virtualenv
 .virtualenv
+.virtualenv2
+.virtualenv3
 
 # Backups folder
 /_backups*
