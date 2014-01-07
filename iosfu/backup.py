@@ -5,6 +5,7 @@ from plistlib import readPlist
 from biplist import readPlist as readBinaryPlist
 
 from .conf import BACKUPS_PATH
+from iosfu import utils
 
 
 class BackupManager(object):
@@ -39,27 +40,65 @@ class Backup(object):
     """
     Backup object
     """
+    # Backup id
     id = None
+
+    # Backup name (settings)
     name = None
+
+    # Backup path
     path = None
+
+    # Files
     files = []
 
+    # bool if its valid -> self.init_check()
     valid = True
 
+    # Required files to mark as valid
     _required_files = [
         'Info.plist', 'Manifest.mbdb', 'Manifest.plist', 'Status.plist'
     ]
 
+    # File handlers to call methods
     _file_handlers = {
         '.plist': '_read_plist'
     }
 
     _plist = {}
 
+    # Data
+    _data_file = None
+    _data = {}
+
     def __init__(self, path):
         self.path = path
         self.get_info()
+        self._data_file = self.get_data_file()
         self.init_check()
+        self.read_data_file()
+
+    def get_data_file(self):
+        return "{}.iosfu".format(self.path)
+
+    def read_data_file(self):
+        try:
+            handler = open(self._data_file)
+        except FileNotFoundError:
+            handler = open(self._data_file, 'w+')
+            # Initial data
+            data = {
+                "id": self.id,
+                "cache": {}
+            }
+            handler.write(utils.serialize(data))
+            handler.seek(0)
+        finally:
+            with handler as f:
+                data_file = f.read()
+
+            self._data = utils.deserialize(data_file)
+            handler.close()
 
     def get_info(self):
         """
@@ -127,3 +166,33 @@ class Backup(object):
             except:
                 # What is it?
                 pass
+
+    #
+    #   Backup data file
+    #
+    def data(self, key, value=None):
+        result = value
+        if value:
+            self._data[key] = value
+        elif key in self._data:
+            result = self._data[key]
+
+        return result
+
+    def cache(self, key, value=None):
+        result = value
+        if value:
+            self._data['cache'][key] = value
+        elif key in self._data['cache']:
+            result = self._data['cache'][key]
+
+        return result
+
+    def clear_cache(self):
+        self._data['cache'] = {}
+        self.write_data_file()
+
+    def write_data_file(self):
+        handler = open(self._data_file, 'w+')
+        handler.write(utils.serialize(self._data))
+        handler.close()
