@@ -136,7 +136,7 @@ class Section(Component):
     def get_context(self):
         if self.backup and self.plugin:
             plugin = self.plugin(backup=self.backup)
-            self.context = plugin.__do__()
+            self.context = plugin.do()
 
     def render(self, *args, **kwargs):
         """
