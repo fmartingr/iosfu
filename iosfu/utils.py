@@ -8,7 +8,7 @@ class IOSFUEncoder(json.JSONEncoder):
     def default(self, obj):
         # DATETIME -> TIMESTAMP
         if isinstance(obj, datetime):
-            return "timestamp:{}".format(obj.timestamp())
+            return "timestamp:{}".format(to_timestamp(obj))
 
         # Let the base class default method raise the TypeError
         return json.JSONEncoder.default(self, obj)
@@ -27,10 +27,6 @@ def object_hook(s):
     return s
 
 
-def deserializer(obj):
-    pass
-
-
 def slugify(string):
     """
     Slugify strings
@@ -45,3 +41,10 @@ def serialize(dictionary):
 
 def deserialize(string):
     return json.loads(string, object_hook=object_hook)
+
+
+def to_timestamp(dt):
+    epoch = datetime(1970, 1, 1)
+    td = dt - epoch
+    # return td.total_seconds()
+    return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 1e6
