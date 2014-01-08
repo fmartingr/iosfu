@@ -42,7 +42,8 @@
       <!-- Right -->
       <p class="navbar-text navbar-right">
         {% if session.backup %}
-          {{ session.backup }}
+          <a href="/backup/"><span class="glyphicon glyphicon-wrench"></span></a>
+          &nbsp;{{ current_backup.name }}
         {% endif %}
       </p>
       <ul class="nav navbar-nav navbar-right">

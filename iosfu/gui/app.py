@@ -1,5 +1,5 @@
 from flask import Flask, session, render_template, redirect, url_for, flash, \
-    render_template_string
+    render_template_string, request
 
 from iosfu.plugin.library import Library
 from iosfu.gui.core import GUIController
@@ -28,8 +28,15 @@ backup_manager.lookup()
 # CONTEXT
 #
 @server.context_processor
-def backup_list():
-    return dict(backups=backup_manager.backups)
+def backup():
+    if 'backup' in session:
+        current_backup = backup_manager.backups[session['backup']]
+    else:
+        current_backup = None
+    return dict(
+        backups=backup_manager.backups,
+        current_backup=current_backup
+    )
 
 
 @server.context_processor
@@ -127,3 +134,31 @@ def select_backup(backup_id):
         flash('The backup you selected was not found.', 'danger')
 
     return redirect(url_for('main'))
+
+
+@server.route("/backup/", methods=['get', 'post'])
+def backup_data():
+    if 'backup' in session:
+        backup = backup_manager.backups[session['backup']]
+
+        # Handle form
+        if request.method == 'POST':
+            backup.data('name', request.form.get('name', ''))
+            backup.data('notes', request.form.get('notes', ''))
+            cache_enabled = request.form.get('cache_enabled', False)
+            backup.data('cache.enabled', cache_enabled == 'on')
+            backup.write_data_file()
+            flash('Settings saved!', 'success')
+
+        # Context
+        ctx = {
+            'backup_info': {
+                'name': backup.data('name'),
+                'notes': backup.data('notes'),
+                'cache_enabled': backup.data('cache.enabled')
+            }
+        }
+        return render_template('backup/settings.jinja', **ctx)
+    else:
+        flash('No backup is selected.', 'danger')
+        redirect(url_for('main'))

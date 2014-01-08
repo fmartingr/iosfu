@@ -45,9 +45,6 @@ class Backup(object):
     # Backup id
     id = None
 
-    # Backup name (settings)
-    name = None
-
     # Backup path
     path = None
 
@@ -80,6 +77,11 @@ class Backup(object):
         self.init_check()
         self.read_data_file()
 
+    @property
+    def name(self):
+        name = self.data('name') or self.id
+        return name
+
     def get_data_file(self):
         return "{}.iosfu".format(self.path)
 
@@ -103,7 +105,6 @@ class Backup(object):
         Get all the basic info for the backup
         """
         self.id = basename(self.path)
-        self.name = self.id
 
         # Check all files
         for filename in listdir(self.path):
