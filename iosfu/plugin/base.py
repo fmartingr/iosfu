@@ -39,14 +39,23 @@ class BasePlugin(object):
         Main function called by plugin library.
         """
         if self._backup:
-            cached = self._backup.cache(self.__slug__)
-            if cached is None:
-                result = self.__do__(*args, **kwargs)
+
+            # Load from cache if enabled
+            if self._backup.data('cache.enabled'):
+                cached = self._backup.cache(self.__slug__)
+                if cached is not None:
+                    return cached
+
+            # Not found in cache, execute plugin!
+            result = self.__do__(*args, **kwargs)
+
+            # Save to cache if enabled
+            if self._backup.data('cache.enabled'):
                 self._backup.cache(self.__slug__, result)
                 self._backup.write_data_file()
-                return result
-            else:
-                return cached
+
+            # Return result
+            return result
         else:
             raise Exception(
                 'Plugin {0} need a backup instance to work with'.format(
