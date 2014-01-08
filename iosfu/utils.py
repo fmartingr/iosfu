@@ -6,9 +6,8 @@ import json
 
 class IOSFUEncoder(json.JSONEncoder):
     def default(self, obj):
-        
         # DATETIME -> TIMESTAMP
-        if isinstance(obj, datetime.datetime):
+        if isinstance(obj, datetime):
             return "timestamp:{}".format(obj.timestamp())
 
         # Let the base class default method raise the TypeError
@@ -41,7 +40,7 @@ def slugify(string):
 
 
 def serialize(dictionary):
-    return json.dumps(dictionary, indent=4 * ' ', cls=IOSFUEncoder)
+    return json.dumps(dictionary, indent=4, cls=IOSFUEncoder)
 
 
 def deserialize(string):

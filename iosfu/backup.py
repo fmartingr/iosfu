@@ -1,10 +1,12 @@
+from __future__ import with_statement
+
 from os import listdir
 from os.path import join as join_paths, basename, isdir, isfile
 from plistlib import readPlist
 
 from biplist import readPlist as readBinaryPlist
 
-from .conf import BACKUPS_PATH
+from .conf import BACKUPS_PATH, BACKUP_DEFAULT_SETTINGS
 from iosfu import utils
 
 
@@ -84,14 +86,10 @@ class Backup(object):
     def read_data_file(self):
         try:
             handler = open(self._data_file)
-        except FileNotFoundError:
+        except (OSError, IOError):
+            # Create default config file if non-existant
             handler = open(self._data_file, 'w+')
-            # Initial data
-            data = {
-                "id": self.id,
-                "cache": {}
-            }
-            handler.write(utils.serialize(data))
+            handler.write(utils.serialize(BACKUP_DEFAULT_SETTINGS))
             handler.seek(0)
         finally:
             with handler as f:

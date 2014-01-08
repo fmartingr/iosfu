@@ -7,3 +7,9 @@ ROOT_PATH = getcwd()
 
 # Backups folder name
 BACKUPS_PATH = join_paths(ROOT_PATH, '_backups')
+
+# Backup default settings
+BACKUP_DEFAULT_SETTINGS = {
+    "cache.enabled": False,
+    "cache": {}
+}
