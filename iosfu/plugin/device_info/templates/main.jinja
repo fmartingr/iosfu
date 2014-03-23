@@ -2,6 +2,11 @@
 
 {% block content %}
 <table class="table table-bordered">
+    <tr>
+        <td rowspan="13">
+            <img src="/static/images/devices/{{ plugin_data.device_image }}" width="200" />
+        </td>
+    </tr>
     {% for key in plugin_data.device %}
     <tr>
         <th>{{ key }}</th>
