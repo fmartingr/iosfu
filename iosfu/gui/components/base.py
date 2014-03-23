@@ -133,10 +133,18 @@ class Section(Component):
 
         return template_content
 
+    def extra_context(self, ctx):
+        return {}
+
     def get_context(self):
         if self.backup and self.plugin:
             plugin = self.plugin(backup=self.backup)
             self.context = plugin.do()
+
+        # Extra context
+        for key, value in self.extra_context(self.context).items():
+            if key not in self.context:
+                self.context[key] = value
 
     def render(self, *args, **kwargs):
         """
